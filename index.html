@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="theme-color" content="#36C5F0" />
+  <meta name="description" content="Controle seus dias de trabalho e turnos com facilidade." />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="default" />
+  <meta name="apple-mobile-web-app-title" content="Dia Trabalhado" />
+
+  <title>Dia Trabalhado</title>
+
+  <!-- Manifest PWA -->
+  <link rel="manifest" href="manifest.json" />
+
+  <!-- Favicon inline SVG -->
+  <link rel="icon" href="icon.svg" type="image/svg+xml" />
+
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet" />
+
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+
+  <!-- ══════════════════════════════════════════
+       HEADER
+  ══════════════════════════════════════════ -->
+  <header class="app-header">
+    <div class="header-inner">
+      <div class="header-brand">
+        <!-- Ícone inline estilo Slack -->
+        <svg class="brand-icon" viewBox="0 0 44 44" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <rect width="44" height="44" rx="10" fill="white"/>
+          <circle cx="14" cy="14" r="5" fill="#36C5F0"/>
+          <rect x="9" y="19" width="10" height="5" rx="2.5" fill="#36C5F0"/>
+          <circle cx="30" cy="14" r="5" fill="#2EB67D"/>
+          <rect x="25" y="9" width="5" height="10" rx="2.5" fill="#2EB67D"/>
+          <circle cx="14" cy="30" r="5" fill="#EC1561"/>
+          <rect x="9" y="25" width="5" height="10" rx="2.5" fill="#EC1561"/>
+          <circle cx="30" cy="30" r="5" fill="#ECB22E"/>
+          <rect x="25" y="25" width="10" height="5" rx="2.5" fill="#ECB22E"/>
+        </svg>
+        <span class="brand-name">Dia Trabalhado</span>
+      </div>
+      <button class="btn-add-period" id="btnAddPeriod" title="Novo período">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+          <line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/>
+        </svg>
+        <span>Novo Período</span>
+      </button>
+    </div>
+  </header>
+
+  <!-- ══════════════════════════════════════════
+       MAIN
+  ══════════════════════════════════════════ -->
+  <main class="main-content" id="mainContent">
+    <!-- Períodos renderizados via JS -->
+    <div class="empty-state" id="emptyState">
+      <div class="empty-icon">
+        <svg viewBox="0 0 80 80" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <circle cx="40" cy="40" r="36" fill="#f0f9ff"/>
+          <rect x="22" y="28" width="36" height="30" rx="4" fill="white" stroke="#36C5F0" stroke-width="2"/>
+          <rect x="28" y="22" width="4" height="8" rx="2" fill="#36C5F0"/>
+          <rect x="48" y="22" width="4" height="8" rx="2" fill="#2EB67D"/>
+          <line x1="28" y1="40" x2="52" y2="40" stroke="#e2e8f0" stroke-width="2" stroke-linecap="round"/>
+          <line x1="28" y1="47" x2="46" y2="47" stroke="#e2e8f0" stroke-width="2" stroke-linecap="round"/>
+        </svg>
+      </div>
+      <h2>Nenhum período ainda</h2>
+      <p>Toque em <strong>+ Novo Período</strong> para começar a registrar seus dias trabalhados.</p>
+    </div>
+  </main>
+
+  <!-- ══════════════════════════════════════════
+       MODAL — Novo / Editar Período
+  ══════════════════════════════════════════ -->
+  <div class="modal-backdrop" id="modalPeriod" aria-hidden="true">
+    <div class="modal-card" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
+      <div class="modal-header">
+        <h2 id="modalTitle">Novo Período</h2>
+        <button class="modal-close" id="modalClose" aria-label="Fechar">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round">
+            <line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/>
+          </svg>
+        </button>
+      </div>
+
+      <div class="modal-body">
+        <div class="field-group">
+          <label for="inputPeriodName">Nome do Período</label>
+          <input type="text" id="inputPeriodName" placeholder="Ex: 1ª Quinzena de Maio" />
+        </div>
+
+        <div class="field-row">
+          <div class="field-group">
+            <label for="inputStartDate">Data Inicial</label>
+            <input type="date" id="inputStartDate" />
+          </div>
+          <div class="field-group">
+            <label for="inputEndDate">Data Final</label>
+            <input type="date" id="inputEndDate" />
+          </div>
+        </div>
+
+        <div class="field-group">
+          <label for="inputPayDate">Data a Receber</label>
+          <input type="date" id="inputPayDate" />
+        </div>
+
+        <div class="shift-values-header">
+          <span>Valores dos Turnos (R$)</span>
+        </div>
+        <div class="field-row three">
+          <div class="field-group">
+            <label for="inputRT1">RT1</label>
+            <input type="number" id="inputRT1" placeholder="0,00" min="0" step="0.01" />
+          </div>
+          <div class="field-group">
+            <label for="inputRT2">RT2</label>
+            <input type="number" id="inputRT2" placeholder="0,00" min="0" step="0.01" />
+          </div>
+          <div class="field-group">
+            <label for="inputRT3">RT3</label>
+            <input type="number" id="inputRT3" placeholder="0,00" min="0" step="0.01" />
+          </div>
+        </div>
+
+        <div class="field-group">
+          <label for="inputTotalDays">Nº de Dias no Período</label>
+          <input type="number" id="inputTotalDays" placeholder="15" min="1" max="31" />
+        </div>
+      </div>
+
+      <div class="modal-footer">
+        <button class="btn-secondary" id="btnCancelPeriod">Cancelar</button>
+        <button class="btn-primary" id="btnSavePeriod">Salvar Período</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══════════════════════════════════════════
+       TOAST NOTIFICATION
+  ══════════════════════════════════════════ -->
+  <div class="toast" id="toast" aria-live="polite"></div>
+
+  <!-- ══════════════════════════════════════════
+       FIREBASE SDK  (v9 compat CDN)
+       ↓ Descomente e preencha com suas credenciais
+  ══════════════════════════════════════════ -->
+  <!--
+  <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore-compat.js"></script>
+  -->
+
+  <script src="app.js"></script>
+</body>
+</html>
